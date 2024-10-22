@@ -18,10 +18,11 @@ namespace InMemoryApp.Web.Controllers
             //or
             //if (!_memoryCache.TryGetValue<string>("time", out string timecache))
             //{
-                MemoryCacheEntryOptions opt = new MemoryCacheEntryOptions();
-                opt.AbsoluteExpiration = DateTime.Now.AddMinutes(1);
-                opt.SlidingExpiration = TimeSpan.FromSeconds(10);
-                _memoryCache.Set<string>("time", DateTime.Now.ToString());
+            MemoryCacheEntryOptions opt = new MemoryCacheEntryOptions();
+            opt.AbsoluteExpiration = DateTime.Now.AddMinutes(1);
+            opt.SlidingExpiration = TimeSpan.FromSeconds(10);
+            opt.Priority = CacheItemPriority.NeverRemove; //not removes from memory even its full. can be problematic if memory getting full if you set all caches NeverRemove
+            _memoryCache.Set<string>("time", DateTime.Now.ToString());
             //}
 
             return View();

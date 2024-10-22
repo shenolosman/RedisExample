@@ -12,13 +12,33 @@ namespace InMemoryApp.Web.Controllers
         }
         public IActionResult Index()
         {
-            _memoryCache.Set<string>("time", DateTime.Now.ToString());
+            // check cache if already exist
+            //if (String.IsNullOrEmpty(_memoryCache.Get<string>("time")))
+            //    _memoryCache.Set<string>("time", DateTime.Now.ToString());
+            //or
+            //if (!_memoryCache.TryGetValue<string>("time", out string timecache))
+            //{
+                MemoryCacheEntryOptions opt = new MemoryCacheEntryOptions();
+                opt.AbsoluteExpiration = DateTime.Now.AddMinutes(1);
+                opt.SlidingExpiration = TimeSpan.FromSeconds(10);
+                _memoryCache.Set<string>("time", DateTime.Now.ToString());
+            //}
+
             return View();
         }
 
         public IActionResult ShowTime()
         {
-            ViewBag.Time = _memoryCache.Get<string>("time");
+            //can get if exist otherwise creates new
+            //_memoryCache.GetOrCreate<string>("time", entry =>
+            //{
+            //    entry.AbsoluteExpiration = DateTime.Now.AddMinutes(5);
+            //    return DateTime.Now.ToString();
+            //});
+            //or
+            _memoryCache.TryGetValue("time", out string timecache);
+            ViewBag.Time = timecache;
+            //ViewBag.Time = _memoryCache.Get<string>("time");
             return View();
         }
     }
